@@ -1,7 +1,439 @@
-this is anike from 30/5/22
-
-
-2nd time add this line 11.10
-
-
-3rd time add this line 11.14
+!
+! HSGQ-XE08R configuration saved from vty
+!   2024/08/26 00:49:35
+!
+hostname US_EPON
+!TR069 Config Profile
+!!
+!Voice Config Profile
+!!
+vlan standard 1,11,101-108,240-243,1100-1113
+exit
+vlan 11 name "Test_VLAN_11 for VPN" 
+vlan 101 name "PON_1_VLAN101" 
+vlan 102 name "PON_2_VLAN102" 
+vlan 103 name "PON_3_VLAN103" 
+vlan 104 name "PON_4_VLAN104" 
+vlan 105 name "PON_5_VLAN105" 
+vlan 106 name "PON_6_VLAN106" 
+vlan 107 name "PON_7_VLAN107" 
+vlan 108 name "PON_8_VLAN108" 
+vlan 240 name "ANT_VLAN240" 
+vlan 241 name "ANT_VLAN241" 
+vlan 242 name "ANT_VLAN242" 
+vlan 243 name "ANT_VLAN243" 
+vlan 1100 desc "VLAN1100 to 1200 for Acces Alap" 
+vlan 1113 name "Access_1101-1200_VLAN1113" 
+port-group mode inter-working
+port-group inter-working mode async
+port-group inter-working ingress-port epon 1 egress epon 1-8 ge 1-4 xge 1
+port-group inter-working ingress-port epon 2 egress epon 1-8 ge 1-4 xge 1
+port-group inter-working ingress-port epon 3 egress epon 1-8 ge 1-4 xge 1
+port-group inter-working ingress-port epon 4 egress epon 1-8 ge 1-4 xge 1
+port-group inter-working ingress-port epon 5 egress epon 1-8 ge 1-4 xge 1
+port-group inter-working ingress-port epon 6 egress epon 1-8 ge 1-4 xge 1
+port-group inter-working ingress-port epon 7 egress epon 1-8 ge 1-4 xge 1
+port-group inter-working ingress-port epon 8 egress epon 1-8 ge 1-4 xge 1
+port-group inter-working ingress-port ge 1 egress epon 1-8 ge 1-3 xge 1
+port-group inter-working ingress-port ge 2 egress epon 1-8 ge 1-3 xge 1
+port-group inter-working ingress-port ge 3 egress epon 1-8 ge 1-3 xge 1
+port-group inter-working ingress-port ge 4 egress epon 1-8 ge 4
+port-group inter-working ingress-port xge 1 egress epon 1-8 ge 1-3 xge 1
+port-group inter-working ingress-port xge 2 egress ge 4 xge 1,2
+port-group inter-working ingress-port xge 3 egress xge 3-4
+port-group inter-working ingress-port xge 4 egress xge 3-4
+interface epon 1
+vlan hybrid 11,101,1100-1113 tagged
+performance monitor enable interval 865 max-count 100
+exit
+interface epon 2
+vlan hybrid 11,102,1100-1113 tagged
+performance monitor enable interval 865 max-count 100
+exit
+interface epon 3
+vlan hybrid 11,103,1100-1113 tagged
+performance monitor enable interval 865 max-count 100
+exit
+interface epon 4
+vlan hybrid 11,104,1100-1113 tagged
+performance monitor enable interval 865 max-count 100
+exit
+interface epon 5
+vlan hybrid 11,105,1100-1113 tagged
+performance monitor enable interval 865 max-count 100
+exit
+interface epon 6
+vlan hybrid 11,106,1100-1113 tagged
+performance monitor enable interval 865 max-count 100
+exit
+interface epon 7
+vlan hybrid 11,107,1100-1113 tagged
+performance monitor enable interval 865 max-count 100
+exit
+interface epon 8
+vlan hybrid 11,108,1100-1113 tagged
+performance monitor enable interval 865 max-count 100
+exit
+interface ge 1
+vlan hybrid 11,101-108 tagged
+performance monitor enable interval 865 max-count 100
+exit
+interface ge 2
+port desc "Home"
+vlan hybrid 11,101-108 tagged
+performance monitor enable interval 865 max-count 100
+exit
+interface ge 3
+vlan hybrid 11,101-108 tagged
+performance monitor enable interval 865 max-count 100
+exit
+interface ge 4
+port desc "Access_Port_10"
+vlan hybrid 11,101-108,1100-1113 tagged
+performance monitor enable interval 865 max-count 100
+exit
+interface xge 1
+port desc "From_MIK_SF_4_Vlan"
+port speed 1000
+vlan hybrid 107,108 tagged
+performance monitor enable interval 865 max-count 100
+exit
+interface xge 2
+cable-type dac
+exit
+interface xge 3
+port desc "TO_MTK_WITH_VLAN_240-244"
+port speed 1000
+vlan hybrid 240-243 tagged
+performance monitor enable interval 865 max-count 100
+exit
+interface xge 4
+port desc "F@H 10G"
+port flow-control enable
+vlan hybrid 240-243 tagged
+performance monitor enable interval 865 max-count 100
+exit
+!! ip route enable
+!!Acl configuration
+!!Packet filter configuration
+!!Acl & Qos configuration
+!
+!
+interface manage
+ifconfig 192.168.100.1 netmask 255.255.255.0
+exit
+interface vlanif 1
+ifconfig 192.168.10.111 netmask 255.255.255.0
+ifconfig sub 192.168.0.254 netmask 255.255.255.0
+exit
+route default gw 192.168.10.1
+dns primary 8.8.8.8 secondary 8.8.8.8
+timezone "Asia/Bishkek"
+ntp enable ntp-server-ip pool.ntp.org backup-server-ip asia.pool.ntp.org
+ntp poll-interval-time 86400
+system-monitor enable interval 200 max-count 512
+system-monitor alarm memory enable 80
+loop-detect pon enable
+loop-detect pon recover-mode auto
+interface epon 1
+rogueonu auto-detect enable
+loopback-onu auto-reject enable
+splitter add 1 parent 0 name "root" desc "The root splitter of PON01"
+p2p enable
+bind-onu 1 mac a0:c6:ec:07:46:e0 onu-type 1ge name "sumonkst"
+bind-onu 2 mac a0:c6:ec:07:53:a9 onu-type 1ge name "Fahim_Bazar"
+bind-onu 3 mac a0:c6:ec:07:49:97 onu-type 1ge name "073waltonp"
+bind-onu 4 mac 80:d4:a5:4d:6c:cf onu-type 1fe name "SonoHome"
+bind-onu 5 mac 4c:ae:1c:0b:5e:1a onu-type 1ge name "Familly_ware"
+bind-onu 6 mac 54:39:df:77:3e:f1 onu-type 1ge name "no_ppp_6"
+bind-onu 7 mac 74:88:2a:fe:d7:77 onu-type 2fe name "no_120"
+bind-onu 8 mac d4:f9:a2:cd:b6:ba onu-type 4fe name "no_112"
+bind-onu 9 mac a0:c6:ec:07:53:ab onu-type 1ge name "Panza_Borobazar"
+bind-onu 10 mac a2:4d:12:29:8c:b0 onu-type 1fe name "Alom_Khan"
+bind-onu 11 mac 2c:a9:39:bd:aa:39 onu-type 1ge name "drreza"
+bind-onu 12 mac 2c:c7:e2:bd:c8:e2 onu-type 2fe name "Apex_Lovely_Access"
+bind-onu 13 mac 74:88:2a:21:c2:89 onu-type 2fe desc "tufazzulhc" name "healtcare_tufazzulhc"
+bind-onu 14 mac 70:a5:6a:0b:4d:ca onu-type 1ge name "IBBL_Bank"
+bind-onu 15 mac 04:f9:38:2f:ba:d0 onu-type 1ge name "sonohome"
+bind-onu 16 mac 50:2b:73:00:0d:74 onu-type 1ge name "BD-2_99-157"
+bind-onu 17 mac a2:8b:10:01:74:90 onu-type 1ge name "Firoz_vi"
+bind-onu 18 mac c0:70:09:e4:8d:7b onu-type 1ge name "Fahim"
+bind-onu 19 mac c0:70:09:57:7d:e2 onu-type 1ge name "mamunvai"
+bind-onu 20 mac 10:51:72:77:91:b4 onu-type 1ge name "BD-2_99-25"
+bind-onu 21 mac 80:66:29:0e:2f:c7 onu-type 1ge 
+bind-onu 22 mac f8:e8:11:0a:66:f0 onu-type 1ge name "no_114"
+bind-onu 23 mac 4c:ae:1c:0b:5e:1e onu-type 1ge name "Prime_Bank_Access"
+bind-onu 24 mac 04:f9:38:61:68:5a onu-type 1ge name "no_ppp_19"
+bind-onu 25 mac 1c:ef:03:e6:9d:3c onu-type 4ge name "Ant_kst"
+bind-onu 26 mac a0:7e:9b:07:65:79 onu-type 1ge name "No_148"
+bind-onu 27 mac 10:51:72:bc:e9:76 onu-type 1ge name "FSIBL_Access"
+bind-onu 28 mac c0:7e:40:a8:63:d8 onu-type 1ge 
+bind-onu 29 mac 50:0b:91:e7:df:d9 onu-type 1ge desc "10.99.99.5" name "Shagor_088"
+exit
+interface epon 2
+rogueonu auto-detect enable
+loopback-onu auto-reject enable
+splitter add 1 parent 0 name "root" desc "The root splitter of PON02"
+p2p enable
+bind-onu 1 mac 50:0b:91:e4:bf:1e onu-type 1ge name "Com_office"
+bind-onu 2 mac 80:14:a8:6c:84:f8 onu-type 1ge name "Shabag"
+bind-onu 3 mac 9c:71:3a:7f:94:61 onu-type 1ge name "Kpidmt"
+bind-onu 4 mac 50:2b:73:00:12:33 onu-type 1ge name "BD-2_Alomgir"
+bind-onu 5 mac 90:17:ac:a7:0b:79 onu-type 1ge name "Tasnim_Home"
+bind-onu 6 mac ac:4e:91:85:91:a7 onu-type 2fe name "Anupomkst"
+bind-onu 7 mac a0:7e:09:27:34:45 onu-type 1ge name "No_226"
+bind-onu 8 mac 4c:ae:1c:0b:5e:28 onu-type 1ge name "Ucckst"
+bind-onu 9 mac 4c:ae:1c:10:96:4c onu-type 1ge name "No_ppp_24"
+bind-onu 10 mac 20:57:af:9a:f7:d8 onu-type 1ge name "No_225"
+bind-onu 11 mac 84:79:73:c5:b8:93 onu-type 1ge name "Joadder_Sir"
+bind-onu 12 mac 50:0b:91:e6:70:35 onu-type 1ge name "Zheadsir"
+bind-onu 13 mac f8:e8:11:1e:5a:f8 onu-type 1ge name "No_235"
+bind-onu 14 mac 4c:ae:1c:0b:5e:22 onu-type 1ge name "114_kpimannansir"
+bind-onu 15 mac 4c:ae:1c:0b:5e:14 onu-type 1ge name "072_kpioffice"
+bind-onu 16 mac 20:57:af:11:5c:9a onu-type 1ge name "No_ppp_19"
+bind-onu 17 mac ac:85:3d:79:91:89 onu-type 1fe name "No_234"
+bind-onu 18 mac e4:2d:7b:2e:17:1f onu-type 1fe name "KPI_principal"
+bind-onu 19 mac 3c:f8:08:f7:37:5a onu-type 1ge name "Rakib_st"
+bind-onu 20 mac c8:3a:35:1f:05:d0 onu-type 1ge name "KP_Iniribili"
+bind-onu 21 mac a2:4e:02:01:6e:30 onu-type 1ge 
+bind-onu 22 mac 38:4c:4f:14:f0:b6 onu-type 1ge 
+exit
+interface epon 3
+rogueonu auto-detect enable
+loopback-onu auto-reject enable
+splitter add 1 parent 0 name "root" desc "The root splitter of PON03"
+p2p enable
+bind-onu 1 mac 4c:ae:1c:0b:5e:16 onu-type 1ge name "Buro_1"
+bind-onu 2 mac e0:67:b3:8d:39:d3 onu-type 1ge name "Hasan_kst"
+bind-onu 3 mac 94:04:9c:ec:d5:b9 onu-type 1fe desc "Hozrot_Mozompur_Ripon" name "Hozrot_Moz_Ripon"
+bind-onu 4 mac 4c:ae:1c:10:b4:f0 onu-type 1ge desc "Police_joyspsteno" name "Police_joyspsten"
+bind-onu 5 mac 74:88:2a:0f:41:68 onu-type 2fe 
+bind-onu 6 mac d8:49:0b:76:10:d5 onu-type 1ge name "Agrani_Mozompur"
+bind-onu 7 mac 80:14:a8:88:55:a0 onu-type 1ge name "Rabbarak"
+bind-onu 8 mac 4c:ae:1c:05:fc:36 onu-type 1ge name "Moname"
+bind-onu 9 mac 80:14:a8:2b:68:c8 onu-type 1ge name "Abjabber"
+bind-onu 10 mac 80:14:a8:65:15:28 onu-type 1ge name "Rashid_cor"
+bind-onu 11 mac 38:d4:a5:91:9f:8f onu-type 1fe name "KNB_GM"
+bind-onu 12 mac 10:51:72:ce:96:11 onu-type 1ge name "Rashid_home11_23"
+bind-onu 13 mac 80:d4:a5:43:f5:8f onu-type 1fe name "BD-2_99-202"
+bind-onu 14 mac 80:38:bc:f8:ac:11 onu-type 1ge name "Education_off"
+bind-onu 15 mac 9c:71:3a:f8:5d:e1 onu-type 1ge 
+bind-onu 16 mac 38:d4:a5:80:40:3f onu-type 1fe name "Access_Jayson"
+bind-onu 17 mac a4:dc:be:8a:82:af onu-type 1fe name "SB_Home"
+bind-onu 18 mac a2:4e:03:21:51:c0 onu-type 1fe name "Rab_Barak"
+bind-onu 19 mac 9c:28:ef:21:0d:eb onu-type 1fe name "009_Eduoffice"
+bind-onu 20 mac 2c:ad:62:bd:ae:62 onu-type 2fe name "RAB_BangloRashid"
+bind-onu 21 mac cc:53:b5:87:5b:4f onu-type 2fe name "Buroz"
+bind-onu 22 mac c0:7e:40:a8:63:c3 onu-type 1ge name "BD_Tuku_Vi"
+bind-onu 23 mac 34:00:a3:b4:f3:f4 onu-type 2fe name "Mir_School"
+bind-onu 24 mac a0:c6:ec:07:53:aa onu-type 1ge 
+exit
+interface epon 4
+rogueonu auto-detect enable
+loopback-onu auto-reject enable
+splitter add 1 parent 0 name "root" desc "The root splitter of PON04"
+p2p enable
+bind-onu 1 mac 78:d7:52:f1:b0:e7 onu-type 1ge name "1-MAC_4/7"
+bind-onu 2 mac a8:bf:3c:07:02:60 onu-type 1ge name "Toyeb_mob"
+bind-onu 3 mac 4c:ae:1c:10:96:5c onu-type 1ge name "101_Wdbrokon_Sir"
+bind-onu 4 mac c8:3a:35:79:9a:87 onu-type 1ge name "KIST_Principal"
+bind-onu 5 mac 4c:ae:1c:10:b4:de onu-type 1ge name "Familly_Jewel"
+bind-onu 6 mac 50:0b:91:e6:78:12 onu-type 1ge name "86alamin"
+bind-onu 7 mac 34:00:a3:90:45:6d onu-type 1ge name "KNB_Home_Huai"
+bind-onu 8 mac 80:d4:a5:62:f3:ef onu-type 1fe 
+bind-onu 9 mac 38:3a:21:20:93:5c onu-type 1ge name "1-MAC_4/22"
+bind-onu 10 mac 80:14:a8:3f:96:d8 onu-type 1ge name "Alikst"
+bind-onu 11 mac 80:14:a8:3f:b0:18 onu-type 1ge name "Shofiq_Home"
+bind-onu 12 mac c0:7e:40:a8:67:04 onu-type 1ge name "Lipu_Rup"
+bind-onu 13 mac 08:e8:4f:e1:10:c4 onu-type 2fe name "Ali_vi 2 Port"
+bind-onu 14 mac 70:a5:6a:ca:43:18 onu-type 1ge name "Jti_Home"
+bind-onu 15 mac 70:a5:6a:ca:48:10 onu-type 1ge 
+bind-onu 16 mac 70:a5:6a:4d:45:86 onu-type 1ge name "Sanjit_porimol"
+bind-onu 17 mac 2c:c6:b1:bd:c7:b1 onu-type 2fe name "Khoka_1"
+bind-onu 18 mac 4c:64:f5:b4:60:bc onu-type 2fe 
+bind-onu 19 mac 80:d4:a5:5e:72:4f onu-type 1fe 
+bind-onu 20 mac c0:70:09:67:b5:64 onu-type 1ge name "Koyel_Vi"
+bind-onu 21 mac 50:0b:91:e8:8a:19 onu-type 1ge 
+bind-onu 22 mac c8:3a:35:78:4e:78 onu-type 1ge 
+bind-onu 23 mac ac:12:8e:b2:9a:50 onu-type 1ge1fe name "Atik_Rajon"
+bind-onu 24 mac 80:14:a8:21:33:a0 onu-type 1ge name "US.Shofiq"
+bind-onu 25 mac c0:7e:40:80:47:ff onu-type 1ge name "Babu_vai_6"
+bind-onu 26 mac 20:57:af:11:5c:96 onu-type 1ge name "US_Shofiq"
+bind-onu 27 mac 80:14:a8:3f:b0:20 onu-type 1ge name "BD-2_99-17"
+bind-onu 28 mac e0:67:b3:b6:75:4e onu-type 1ge name "Rakib_Sakib"
+bind-onu 29 mac 84:79:73:99:5e:c4 onu-type 1ge name "Shuvo_vai"
+bind-onu 30 mac 34:00:a3:f8:69:bd onu-type 2fe 
+bind-onu 31 mac 68:89:c1:d9:8d:0c onu-type 1ge name "0-MAC_4/35"
+bind-onu 32 mac 50:0b:91:e9:ad:b2 onu-type 1ge name "1-MAC_4/6"
+bind-onu 33 mac 20:57:af:99:40:20 onu-type 1ge name "Kollol_Mamu"
+bind-onu 34 mac 24:9e:ab:1d:f3:90 onu-type 2fe 
+bind-onu 35 mac e8:bd:d1:cb:01:a1 onu-type 1fe name "Shorif_KNB"
+bind-onu 36 mac ac:85:3d:8d:10:80 onu-type 1ge desc "Rashid_home_huwei" name "Rashid_home_huwe"
+bind-onu 37 mac 80:d4:a5:0a:ae:6f onu-type 1fe name "1-MAC_4/37"
+bind-onu 38 mac 30:3d:51:e3:3d:94 onu-type 1ge name "AB_Hamid"
+bind-onu 39 mac 0c:45:ba:50:ce:f1 onu-type 1ge name "1-MAC_4/18"
+bind-onu 40 mac 68:8f:84:b8:a7:d1 onu-type 1ge name "Romel_Ety"
+bind-onu 41 mac a2:4e:06:04:15:30 onu-type 1ge 
+bind-onu 42 mac 54:51:1b:ab:90:d8 onu-type 2fe 
+bind-onu 43 mac a2:4e:03:25:43:f0 onu-type 1fe name "Imran_Glass"
+bind-onu 44 mac ac:85:3d:e3:53:30 onu-type 1ge name "Drsamrat"
+bind-onu 45 mac cc:53:b5:2e:c7:e4 onu-type 1fe name "1-MAC_4/29"
+bind-onu 46 mac 18:c5:8a:9c:1a:91 onu-type 1fe name "Samiul_Kst"
+bind-onu 47 mac 00:d5:9e:ae:42:de onu-type 1ge name "Alomgir_Wdb"
+bind-onu 48 mac 18:09:b9:3b:97:36 onu-type 1fe 
+bind-onu 49 mac 50:0b:91:e5:08:41 onu-type 1ge name "WDB_Aminul"
+bind-onu 50 mac a2:4e:06:04:14:f0 onu-type 1ge 
+exit
+interface epon 5
+rogueonu auto-detect enable
+loopback-onu auto-reject enable
+splitter add 1 parent 0 name "root" desc "The root splitter of PON05"
+p2p enable
+bind-onu 1 mac d4:b1:10:03:ea:39 onu-type 1fe name "Polli_Dariddro"
+bind-onu 2 mac cc:53:b5:86:93:f0 onu-type 2fe 
+bind-onu 3 mac 84:79:73:99:5e:19 onu-type 1ge name "US_Manik"
+bind-onu 4 mac f8:e8:11:b0:c7:75 onu-type 2fe 
+bind-onu 5 mac 80:d4:a5:0a:45:1f onu-type 1fe 
+bind-onu 6 mac c0:7e:40:83:1d:bd onu-type 1ge 
+bind-onu 7 mac 4c:ae:1c:10:b4:ec onu-type 1ge name "Da"
+bind-onu 8 mac 34:00:a3:a4:8c:ad onu-type 1fe 
+bind-onu 9 mac 50:0b:91:e0:d8:0c onu-type 1ge 
+bind-onu 10 mac 74:88:2a:7c:53:fb onu-type 2fe 
+bind-onu 11 mac 4c:ae:1c:0b:5e:12 onu-type 1ge 
+bind-onu 12 mac 78:d7:52:32:1e:d3 onu-type 1ge 
+bind-onu 13 mac 54:39:df:94:92:f4 onu-type 1ge 
+bind-onu 14 mac b4:f9:49:51:1c:64 onu-type 1ge 
+bind-onu 15 mac 80:14:a8:6c:7f:c0 onu-type 1ge name "Joadder_BTC"
+bind-onu 16 mac 98:45:62:f7:24:9e onu-type 1ge 
+bind-onu 17 mac cc:53:b5:75:91:ad onu-type 1fe 
+bind-onu 18 mac c8:3a:35:79:9a:88 onu-type 1ge 
+bind-onu 19 mac 80:14:a8:6c:81:28 onu-type 1ge 
+bind-onu 20 mac 3c:f8:08:cb:22:57 onu-type 1ge 
+bind-onu 21 mac 4c:ae:1c:10:96:5e onu-type 1ge name "Custom_Office"
+bind-onu 22 mac a8:bf:3c:07:04:2a onu-type 1ge 
+bind-onu 23 mac 08:e8:4f:1b:4c:8a onu-type 2fe 
+bind-onu 24 mac 78:d7:52:1b:bb:89 onu-type 1ge 
+bind-onu 25 mac 64:3e:8c:fc:08:44 onu-type 1ge 
+bind-onu 26 mac 44:55:b1:d0:68:2e onu-type 1ge name "Wave_Foundation"
+bind-onu 27 mac 4c:ae:1c:0b:5e:0e onu-type 1ge 
+bind-onu 28 mac 38:d4:a5:93:74:3f onu-type 1fe 
+bind-onu 29 mac d8:49:0b:29:ac:e3 onu-type 1fe 
+bind-onu 30 mac 80:d4:a5:4e:65:6f onu-type 1fe 
+bind-onu 31 mac 00:d3:9e:76:7f:20 onu-type 1ge 
+bind-onu 32 mac f8:e8:11:c0:40:f1 onu-type 1ge 
+bind-onu 33 mac a2:3d:07:24:7c:e0 onu-type 1ge name "PWD"
+exit
+interface epon 6
+rogueonu auto-detect enable
+loopback-onu auto-reject enable
+splitter add 1 parent 0 name "root" desc "The root splitter of PON06"
+p2p enable
+bind-onu 1 mac c0:7e:40:78:76:98 onu-type 1ge name "Fdvav"
+bind-onu 2 mac 08:e8:4f:95:c9:15 onu-type 1ge name "Fvfv"
+bind-onu 3 mac 18:09:b9:71:f3:48 onu-type 1fe desc "IBBL_Access_Mamoni_1" name "IBBL_Access_Mamoni_1"
+bind-onu 4 mac 74:88:2a:94:45:ab onu-type 1ge name "Chad_Sultana"
+bind-onu 5 mac 18:09:b9:71:21:c8 onu-type 1fe name "IBBL_Access_Mamoni_2"
+bind-onu 6 mac 80:14:a8:31:8c:38 onu-type 1ge 
+bind-onu 7 mac cc:53:b5:77:b9:98 onu-type 1fe 
+bind-onu 8 mac 38:d4:a5:84:3f:bf onu-type 1fe 
+bind-onu 9 mac c0:7e:40:a8:66:1c onu-type 1ge name "NRBC_Access"
+bind-onu 10 mac 18:de:d7:a5:1d:18 onu-type 1fe 
+bind-onu 11 mac 38:d4:a5:82:aa:9f onu-type 1fe name "Fareast_Access"
+bind-onu 12 mac 80:14:a8:6c:80:00 onu-type 1ge 
+exit
+interface epon 7
+rogueonu auto-detect enable
+loopback-onu auto-reject enable
+splitter add 1 parent 0 name "root" desc "The root splitter of PON07"
+p2p enable
+performance monitor onu enable interval 300 max-count 30
+performance monitor onu add 41,43
+bind-onu 1 mac 38:3a:21:22:20:e5 onu-type 1ge 
+bind-onu 2 mac a0:7e:9b:07:62:7f onu-type 1ge 
+bind-onu 3 mac 78:d7:52:f4:38:60 onu-type 1ge 
+bind-onu 4 mac 4c:ae:1c:0b:5e:30 onu-type 1ge name "Msmltd"
+bind-onu 5 mac c0:70:09:64:2b:b9 onu-type 1ge 
+bind-onu 6 mac 94:04:9c:f6:36:dc onu-type 2fe 
+bind-onu 7 mac cc:52:89:01:af:29 onu-type 1ge 
+bind-onu 8 mac 80:14:a8:3f:af:f8 onu-type 1ge 
+bind-onu 9 mac 1c:ef:03:07:de:7c onu-type 1ge 
+bind-onu 10 mac c0:7e:40:b2:55:ca onu-type 1ge 
+bind-onu 11 mac a2:3e:02:20:3b:70 onu-type 1fe 
+bind-onu 12 mac 50:0b:91:e7:78:f2 onu-type 1ge 
+bind-onu 13 mac a2:4d:10:18:7c:d0 onu-type 1ge 
+bind-onu 14 mac 80:14:a8:2b:69:48 onu-type 1ge 
+bind-onu 15 mac c0:7e:40:80:67:c7 onu-type 1ge 
+bind-onu 16 mac 4c:ae:1c:0b:5e:32 onu-type 1ge 
+bind-onu 17 mac 74:88:2a:09:2b:3e onu-type 2fe 
+bind-onu 18 mac 94:04:9c:74:78:af onu-type 1ge name "KPS_141_Ranvid"
+bind-onu 19 mac 80:d4:a5:4e:83:5f onu-type 1fe 
+bind-onu 20 mac a2:3d:08:27:37:90 onu-type 1ge 
+bind-onu 21 mac 4c:ae:1c:0b:5e:10 onu-type 1ge 
+bind-onu 22 mac 2c:cf:58:42:70:d8 onu-type 1ge 
+bind-onu 23 mac d8:49:0b:58:b7:b2 onu-type 1ge 
+bind-onu 24 mac 20:57:af:2e:37:2e onu-type 1ge 
+bind-onu 25 mac 2c:bc:ff:bd:bd:ff onu-type 2fe 
+bind-onu 26 mac a2:4e:05:24:90:d0 onu-type 1fe 
+bind-onu 27 mac a2:8c:10:14:84:90 onu-type 1ge 
+bind-onu 28 mac 80:d4:a5:50:3c:ff onu-type 1fe 
+bind-onu 29 mac f8:e8:11:16:00:2f onu-type 1ge 
+bind-onu 30 mac a2:3d:12:29:4f:f0 onu-type 1fe 
+bind-onu 31 mac a2:4e:05:24:90:30 onu-type 1ge name "Prudent_Samsul"
+bind-onu 32 mac a8:bf:3c:01:0a:7d onu-type 1ge 
+bind-onu 33 mac c0:7e:40:a8:63:cf onu-type 1ge 
+bind-onu 34 mac c0:7e:40:a8:65:bb onu-type 1ge 
+bind-onu 35 mac c0:7e:40:b1:6b:0d onu-type 1ge 
+bind-onu 36 mac 38:d4:a5:91:23:ff onu-type 1fe 
+bind-onu 37 mac 34:00:a3:91:34:74 onu-type 1ge 
+bind-onu 38 mac 78:c3:13:25:03:33 onu-type 1ge3fe 
+bind-onu 39 mac c0:7e:40:80:49:df onu-type 1ge name "Sumon_Sojol"
+bind-onu 40 mac 20:57:af:2e:37:6e onu-type 1ge 
+bind-onu 41 mac 70:a8:e3:f3:75:47 onu-type 1ge name "Alom_Vi_Chairman"
+bind-onu 42 mac a2:3e:05:23:b6:00 onu-type 1fe 
+bind-onu 43 mac 20:57:af:9b:4b:f8 onu-type 1ge desc "10.90.90.24" name "Shohel_Visa"
+bind-onu 44 mac ac:85:3d:b3:c6:9a onu-type 1ge 
+exit
+interface epon 8
+rogueonu auto-detect enable
+loopback-onu auto-reject enable
+splitter add 1 parent 0 name "root" desc "The root splitter of PON08"
+p2p enable
+bind-onu 1 mac a8:bf:3c:23:a1:c1 onu-type 1ge name "047_Mrs"
+bind-onu 2 mac 50:0b:91:e5:14:bc onu-type 1ge name "108_Kabir"
+bind-onu 3 mac 38:d4:a5:96:fa:0f onu-type 1fe name "Race_Runner"
+bind-onu 4 mac 6c:68:a4:71:0d:16 onu-type 1ge name "KNB_Vsol"
+bind-onu 5 mac 80:d4:a5:62:ab:9f onu-type 1fe desc "Access VLAN 1108" name "Jubo_Unnayan"
+bind-onu 6 mac 74:88:2a:1b:73:21 onu-type 2fe name "026_Ttc"
+bind-onu 7 mac 50:2b:73:00:12:2f onu-type 1ge 
+exit
+interface onu 1/12
+port-vlan 1 mode tag 1103 pri 0
+port-vlan 2 mode tag 1103 pri 0
+exit
+interface onu 1/23
+port-vlan 1 mode tag 1104 pri 0
+exit
+interface onu 1/27
+port-vlan 1 mode tag 1101 pri 0
+exit
+interface onu 3/16
+port-vlan 1 mode tag 1102 pri 0
+exit
+interface onu 4/13
+port-vlan 1 mode tag 11 pri 0
+port-vlan 2 mode tag 11 pri 0
+exit
+interface onu 6/3
+port-vlan 1 mode tag 1107 pri 0
+exit
+interface onu 6/9
+port-vlan 1 mode tag 1105 pri 0
+exit
+interface onu 6/11
+port-vlan 1 mode tag 1106 pri 0
+exit
+interface onu 8/5
+port-vlan 1 mode tag 1108 pri 0
+exit
+!
+!
